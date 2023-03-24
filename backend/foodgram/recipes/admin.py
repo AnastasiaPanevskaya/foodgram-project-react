@@ -7,8 +7,7 @@ from recipes.models import (
     Recipe,
     Favorites,
     Basket,
-    RecipesTags,
-    IngredientsInRecipes
+    RecipeIngredient
 )
 
 
@@ -30,5 +29,5 @@ admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Favorites)
 admin.site.register(Basket)
-admin.site.register(IngredientsInRecipes)
-admin.site.register(RecipesTags)
+admin.site.register(RecipeIngredient)
+

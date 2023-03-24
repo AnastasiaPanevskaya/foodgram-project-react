@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from .models import User, Follow
+from .models import User
 
 
 class UserAdmin(ModelAdmin):
@@ -9,4 +9,3 @@ class UserAdmin(ModelAdmin):
 
 
 admin.site.register(User, UserAdmin)
-admin.site.register(Follow)
