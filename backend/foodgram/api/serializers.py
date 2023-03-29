@@ -1,15 +1,17 @@
-from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
-from django.core.files.base import ContentFile
-from djoser.serializers import UserCreateSerializer, UserSerializer
 import base64
-from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag, Favorites, Basket
-from users.models import Follow
-from rest_framework import status
+from re import match
+
+from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
+from django.shortcuts import get_object_or_404
+from djoser.serializers import UserCreateSerializer, UserSerializer
+from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
-from rest_framework import serializers
-from re import match
+
+from recipes.models import (Basket, Favorites, Ingredient, Recipe,
+                            RecipeIngredient, Tag)
+from users.models import Follow
 
 
 User = get_user_model()
@@ -27,6 +29,9 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         if not match(r'[\w.@+-]+', value):
             raise ValidationError('Неверный логин')
         return value
+    
+    def validate_email(self, value):
+        return value.lower()
 
 
 class CustomUserSerializer(UserSerializer):
@@ -45,9 +50,7 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request.user.is_anonymous:
-            return False
-        return Follow.objects.filter(
+        return not request.user.is_anonymous and Follow.objects.filter(
             user=request.user,
             author=obj
         ).exists()

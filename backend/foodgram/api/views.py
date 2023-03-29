@@ -1,29 +1,26 @@
+from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import get_user_model
-from djoser.views import UserViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import (Favorites, Ingredient, RecipeIngredient, Recipe,
-                            Basket, Tag)
+from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import (HTTP_201_CREATED,
-                                   HTTP_204_NO_CONTENT,
-                                   HTTP_400_BAD_REQUEST
-                                   )
+from rest_framework.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
+                                   HTTP_400_BAD_REQUEST)
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import CustomPagination
-from api.permissions import AuthorOrAdminOrReadOnly, IsAuthenticatedOrAdmin
-from api.serializers import (IngredientSerializer,CustomUserSerializer,
-                          RecipeShortSerializer, RecipeSerializer,
-                          TagSerializers, FollowSerializer)
+from api.permissions import IsAuthenticatedOrAdmin, IsAuthorOrAdminOrReadOnly
+from api.serializers import (CustomUserSerializer, FollowSerializer,
+                             IngredientSerializer, RecipeSerializer,
+                             RecipeShortSerializer, TagSerializers)
+from recipes.models import (Basket, Favorites, Ingredient, Recipe,
+                            RecipeIngredient, Tag)
 from users.models import Follow, User
-
 
 User = get_user_model()
 
@@ -87,7 +84,7 @@ class TagViewSet(ReadOnlyModelViewSet):
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = (AuthorOrAdminOrReadOnly | IsAuthenticatedOrAdmin,)
+    permission_classes = (IsAuthorOrAdminOrReadOnly | IsAuthenticatedOrAdmin,)
     serializer_class = RecipeSerializer
     pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend,)
