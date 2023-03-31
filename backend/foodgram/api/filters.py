@@ -33,8 +33,7 @@ class IngredientFilter(FilterSet):
 
 class RecipeFilter(FilterSet):
     author = ModelChoiceFilter(queryset=User.objects.all())
-    tags = AllValuesMultipleFilter(field_name='tags__slug',
-                                   queryset=Tag.objects.all())
+    tags = AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = BooleanFilter(
         method='filter_is_in_shopping_cart')
