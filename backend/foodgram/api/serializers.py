@@ -205,7 +205,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
         return self.create_ingredients(recipe, ingredients)
-    
 
     def update(self, instance, validated_data):
         super().update(instance, validated_data)
