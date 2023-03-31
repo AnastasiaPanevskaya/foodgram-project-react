@@ -6,13 +6,12 @@ from django_filters.rest_framework.filters import (
     AllValuesMultipleFilter,
     BooleanFilter
 )
-from recipes.models import Ingredient, Recipe, Tag
+from recipes.models import Ingredient, Recipe
 
 User = get_user_model()
 
 
 class IngredientFilter(FilterSet):
-    """Фильтр по названию ингредиента"""
     name = filters.CharFilter(method='filter_name')
 
     class Meta:
@@ -38,10 +37,6 @@ class RecipeFilter(FilterSet):
     is_in_shopping_cart = BooleanFilter(
         method='filter_is_in_shopping_cart')
 
-    class Meta:
-        model = Recipe
-        fields = ('tags', 'author',)
-
     def filter_is_favorited(self, queryset, name, value):
         user = self.request.user
         if value and not user.is_anonymous:
@@ -53,3 +48,7 @@ class RecipeFilter(FilterSet):
         if value and not user.is_anonymous:
             return queryset.filter(baskets__user=user)
         return queryset
+
+    class Meta:
+        model = Recipe
+        fields = ('tags', 'author',)
