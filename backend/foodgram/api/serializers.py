@@ -207,30 +207,35 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
+        super().update(instance, validated_data)
         tags = self.validate_tags(self.initial_data.get('tags'))
         ingredients = self.validate_ingredients(
             self.initial_data.get('ingredients')
         )
-        instance = super().update(instance, validated_data)
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
-        self.create_ingredients(recipe=instance,
-                                ingredients=ingredients)
+        instance = self.create_ingredients(instance, ingredients)
         instance.save()
         return instance
 
     def get_is_favorited(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
+        request = self.context.get('request')
+        if request.is_anonymous:
             return False
-        return Favorites.objects.filter(recipe=obj).exists()
+        return Favorites.objects.filter(
+            user=request.user,
+            recipe=obj
+            ).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
+        request = self.context.get('request')
+        if request.user.is_anonymous:
             return False
-        return Basket.objects.filter(recipe=obj).exists()
+        return Basket.objects.filter(
+            user=request.user,
+            recipe=obj
+        ).exists()
 
     def validate_ingredients(self, value):
         ingredients = value
