@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.db.models import BooleanField, ExpressionWrapper, Q
-from django_filters.rest_framework import FilterSet, filters
+from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework.filters import (
     ModelChoiceFilter,
     AllValuesMultipleFilter,
-    BooleanFilter
+    BooleanFilter,
+    CharFilter
 )
 from recipes.models import Ingredient, Recipe
 
@@ -12,7 +13,7 @@ User = get_user_model()
 
 
 class IngredientFilter(FilterSet):
-    name = filters.CharFilter(method='filter_name')
+    name = CharFilter(method='filter_name')
 
     class Meta:
         model = Ingredient
