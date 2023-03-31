@@ -188,14 +188,14 @@ class RecipeSerializer(serializers.ModelSerializer):
             'is_favorited',
         )
 
-    def create_ingredients(self, ingredients, instance):
-        for ingredient in ingredients:
-            ing, _ = RecipeIngredient.objects.get_or_create(
-                ingredient_id=ingredient['id'],
-                amount=ingredient['amount']
-            )
-            instance.ingredients.add(ing)
-        return instance
+    # def create_ingredients(self, ingredients, instance):
+    #     for ingredient in ingredients:
+    #         ing, _ = RecipeIngredient.objects.get_or_create(
+    #             ingredient_id=ingredient['id'],
+    #             amount=ingredient['amount']
+    #         )
+    #         instance.ingredients.add(ing)
+    #     return instance
 
     def create(self, validated_data):
         tags = self.initial_data.get('tags')
