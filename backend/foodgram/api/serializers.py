@@ -200,7 +200,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         tags = self.initial_data.get('tags')
         recipe = Recipe.objects.create(**validated_data)
         for tag in tags:
-            Recipe.objects.create(tag_id=tag, recipe=recipe)
+            Tag.objects.create(tag_id=tag, recipe=recipe)
         recipe.tags.set(tags)
         self.create_ingredients(ingredients, recipe)
         return recipe
