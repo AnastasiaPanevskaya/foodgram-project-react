@@ -6,7 +6,7 @@ from django_filters.rest_framework.filters import (
     AllValuesMultipleFilter,
     BooleanFilter
 )
-from recipes.models import Ingredient, Recipe
+from recipes.models import Ingredient, Recipe, Tag
 
 User = get_user_model()
 
