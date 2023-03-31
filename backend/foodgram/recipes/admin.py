@@ -23,4 +23,3 @@ admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Favorites)
 admin.site.register(Basket)
 admin.site.register(RecipeIngredient)
-

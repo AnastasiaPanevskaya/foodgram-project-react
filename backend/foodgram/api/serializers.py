@@ -20,16 +20,16 @@ User = get_user_model()
 class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email','username',
-                  'first_name','last_name','password'
-                )
+        fields = ('id', 'email', 'username',
+                  'first_name', 'last_name', 'password'
+                  )
         write_only_fields = ('password',)
 
     def validate_username(self, value):
         if not match(r'[\w.@+-]+', value):
             raise ValidationError('Неверный логин')
         return value
-    
+
     def validate_email(self, value):
         return value.lower()
 
@@ -54,17 +54,17 @@ class CustomUserSerializer(UserSerializer):
             user=request.user,
             author=obj
         ).exists()
-    
+
 
 class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')  
-            ext = format.split('/')[-1]  
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
 
         return super().to_internal_value(data)
-    
+
 
 class RecipeShortSerializer(serializers.ModelSerializer):
     image = Base64ImageField(required=False, allow_null=True)
@@ -91,20 +91,19 @@ class FollowSerializer(CustomUserSerializer):
         )
         read_only_fields = ('email', 'username', 'first_name', 'last_name')
 
-
     def get_recipes(self, obj):
         request = self.context.get('request')
         limit = request.GET.get('recipes_limit')
         recipes = obj.recipe.all()
         if limit:
             if limit == "" or not (limit.isdigit()):
-                raise ValidationError({
-                        'recipes_limit': 'Может быть только числом!'
-                    })
+                raise ValidationError(
+                    {'recipes_limit': 'Может быть только числом!'}
+                )
             recipes = recipes[:int(limit)]
         serializer = RecipeShortSerializer(recipes, many=True, read_only=True)
         return serializer.data
-    
+
     def get_recipes_count(self, obj):
         return obj.recipe.count()
 
@@ -114,7 +113,7 @@ class FollowSerializer(CustomUserSerializer):
         if Follow.objects.filter(author=author, user=user).exists():
             raise ValidationError(
                 detail='Пользователь не может повторно'
-                        'подписаться на другого пользователя',
+                       'подписаться на другого пользователя',
                 code=status.HTTP_400_BAD_REQUEST
             )
         if user == author:
@@ -156,7 +155,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         source='ingredient.name')
     measurement_unit = serializers.CharField(
         source='ingredient.measurement_unit')
-    
+
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'name', 'measurement_unit', 'amount')
@@ -215,19 +214,19 @@ class RecipeSerializer(serializers.ModelSerializer):
                                 ingredients=ingredients)
         instance.save()
         return instance
-    
+
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
         return Favorites.objects.filter(recipe=obj).exists()
-    
+
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
         return Basket.objects.filter(recipe=obj).exists()
-    
+
     def validate_ingredients(self, value):
         ingredients = value
         if not ingredients:

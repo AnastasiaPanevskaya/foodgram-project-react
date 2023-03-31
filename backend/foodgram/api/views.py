@@ -24,6 +24,7 @@ from users.models import Follow, User
 
 User = get_user_model()
 
+
 class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
@@ -41,8 +42,8 @@ class CustomUserViewSet(UserViewSet):
 
         if request.method == 'POST':
             serializer = FollowSerializer(author,
-                                             data=request.data,
-                                             context={"request": request})
+                                          data=request.data,
+                                          context={"request": request})
             serializer.is_valid(raise_exception=True)
             Follow.objects.create(user=user, author=author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -52,7 +53,7 @@ class CustomUserViewSet(UserViewSet):
                                              user=user,
                                              author=author)
             subscription.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,
@@ -63,8 +64,8 @@ class CustomUserViewSet(UserViewSet):
         queryset = User.objects.filter(subscribing__user=user)
         pages = self.paginate_queryset(queryset)
         serializer = FollowSerializer(pages,
-                                         many=True,
-                                         context={'request': request})
+                                      many=True,
+                                      context={'request': request})
         return self.get_paginated_response(serializer.data)
 
 
@@ -93,7 +94,6 @@ class RecipeViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-
     @action(detail=False, permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request):
         if not Basket.objects.filter(
@@ -116,11 +116,10 @@ class RecipeViewSet(ModelViewSet):
                     f'{ingredient["amount"]}\n\n'
                     )
             shopping_list += elem
-        response = HttpResponse(shopping_list,
-                                content_type='text/plain;charset=UTF-8'
-                                )
+            response = HttpResponse(shopping_list,
+                                    content_type='text/plain;charset=UTF-8'
+                                    )
         return response
-    
 
     @action(methods=['post', 'delete'],
             detail=True,
@@ -155,7 +154,7 @@ class RecipeViewSet(ModelViewSet):
             recipe=recipe
         ).delete()
         return Response(status=HTTP_204_NO_CONTENT)
-    
+
     @action(methods=['post', 'delete'],
             detail=True,
             permission_classes=(IsAuthenticated,))

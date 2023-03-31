@@ -16,7 +16,7 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}.'
-    
+
 
 class Tag(models.Model):
     name = models.CharField(
@@ -30,7 +30,7 @@ class Tag(models.Model):
     slug = models.SlugField(
         'Уникальный слаг',
         unique=True)
-    
+
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
@@ -38,7 +38,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Recipe(models.Model):
     author = models.ForeignKey(
@@ -80,7 +80,7 @@ class Recipe(models.Model):
 
     def __str__(self):
         return f'{self.author.email}, {self.name}'
-    
+
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
@@ -102,7 +102,7 @@ class RecipeIngredient(models.Model):
         verbose_name = 'Количество ингредиента'
         verbose_name_plural = 'Количество ингредиентов'
         ordering = ['-id']
-        
+
 
 class Favorites(models.Model):
     user = models.ForeignKey(
@@ -116,16 +116,14 @@ class Favorites(models.Model):
         on_delete=models.CASCADE,
         related_name='favorite_recipe',
         verbose_name='Избранный рецепт')
-    
 
     class Meta:
         verbose_name = 'Изьранный рецепт'
         verbose_name_plural = 'Избранные рецепты'
 
-
     def __str__(self):
         return f'{self.user} добавил в Избранное рецепт {self.recipe}'
-    
+
 
 class Basket(models.Model):
     user = models.ForeignKey(
@@ -139,7 +137,6 @@ class Basket(models.Model):
         on_delete=models.CASCADE,
         related_name='basket',
         verbose_name='Корзина')
-    
 
     class Meta:
         verbose_name = 'Корзина'

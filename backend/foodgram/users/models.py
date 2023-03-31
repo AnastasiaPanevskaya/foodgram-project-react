@@ -13,7 +13,7 @@ class User(AbstractUser):
     last_name = models.CharField(
         'Фамилия',
         max_length=150)
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
@@ -24,7 +24,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
-    
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
@@ -52,7 +52,5 @@ class Follow(models.Model):
         verbose_name = 'Подписчик'
         verbose_name_plural = 'Подписчики'
 
-    
     def __str__(self):
         return f'{self.user} подписался на {self.author}'
-
