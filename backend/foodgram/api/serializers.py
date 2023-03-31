@@ -188,15 +188,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             'is_favorited',
         )
 
-    def create_ingredients(self, ingredients, instance):
-        for ingredient in ingredients:
-            ing, _ = RecipeIngredient.objects.get_or_create(
-                ingredient_id=ingredient['id'],
-                amount=ingredient['amount']
-            )
-            instance.ingredients.add(ing)
-        return instance
-
     def create(self, validated_data):
         tags = self.initial_data.get('tags')
         ingredients = self.initial_data.get('ingredients')
@@ -220,7 +211,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
-        instance = self.create_ingredients(instance, ingredients)
+        RecipeIngredient.objects.bulk_create(
+            RecipeIngredient(
+                recipe=instance,
+                ingredient_id=ingredient.get('id'),
+                amount=ingredient.get('amount')
+            ) for ingredient in ingredients)
         instance.save()
         return instance
 
