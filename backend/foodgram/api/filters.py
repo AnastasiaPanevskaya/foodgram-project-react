@@ -1,27 +1,41 @@
 from django.contrib.auth import get_user_model
-from django_filters import rest_framework as filters
-from recipes.models import Ingredient, Recipe, Tag
+from django.db.models import BooleanField, ExpressionWrapper, Q
+from django_filters.rest_framework import FilterSet, filters
+from django_filters.rest_framework.filters import (
+    ModelChoiceFilter,
+    AllValuesMultipleFilter,
+    BooleanFilter
+)
+from recipes.models import Ingredient, Recipe
 
 User = get_user_model()
 
 
-class IngredientFilter(filters.FilterSet):
-    name = filters.CharFilter
+class IngredientFilter(FilterSet):
+    """Фильтр по названию ингредиента"""
+    name = filters.CharFilter(method='filter_name')
 
     class Meta:
         model = Ingredient
         fields = ('name',)
 
+    def filter_name(self, queryset, name, value):
 
-class RecipeFilter(filters.FilterSet):
-    tags = filters.ModelMultipleChoiceFilter(
-        field_name='tags__slug',
-        to_field_name='slug',
-        queryset=Tag.objects.all(),
-    )
+        return queryset.filter(
+            Q(name__istartswith=value) | Q(name__icontains=value)
+        ).annotate(
+            startswith=ExpressionWrapper(
+                Q(name__istartswith=value),
+                output_field=BooleanField()
+            )
+        ).order_by('-startswith')
 
-    is_favorited = filters.BooleanFilter(method='filter_is_favorited')
-    is_in_shopping_cart = filters.BooleanFilter(
+
+class RecipeFilter(FilterSet):
+    author = ModelChoiceFilter(queryset=User.objects.all())
+    tags = AllValuesMultipleFilter(field_name='tags__slug')
+    is_favorited = BooleanFilter(method='filter_is_favorited')
+    is_in_shopping_cart = BooleanFilter(
         method='filter_is_in_shopping_cart')
 
     class Meta:
