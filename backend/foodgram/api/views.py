@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -19,6 +20,8 @@ from api.serializers import (CustomUserSerializer, FollowSerializer,
 from recipes.models import (Basket, Favorites, Ingredient, Recipe,
                             RecipeIngredient, Tag)
 from users.models import Follow, User
+
+User = get_user_model()
 
 
 class CustomUserViewSet(UserViewSet):
