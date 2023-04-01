@@ -12,7 +12,7 @@ from rest_framework.status import (HTTP_201_CREATED, HTTP_204_NO_CONTENT,
                                    HTTP_400_BAD_REQUEST)
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from api.filters import IngredientFilter, RecipeFilter
+from api.filters import RecipeFilter
 from api.pagination import CustomPagination
 from api.permissions import IsAuthenticatedOrAdmin, IsAuthorOrAdminOrReadOnly
 from api.serializers import (CustomUserSerializer, FollowSerializer,
