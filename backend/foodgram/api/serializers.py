@@ -229,7 +229,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         tags = self.initial_data.get('tags')
         Recipe.objects.filter(recipe=instance).delete()
         Recipe.objects.bulk_create(
-            Tag(
+            Recipe(
                 tag=tag,
                 recipe=instance,
 
