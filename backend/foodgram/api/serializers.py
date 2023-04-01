@@ -230,7 +230,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         Tag.objects.filter(recipe=instance).delete()
         Tag.objects.bulk_create(
             Tag(
-                tag_id=tag,
+                tag=tag,
                 recipe=instance,
 
             ) for tag in tags)
