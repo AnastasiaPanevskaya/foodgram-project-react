@@ -203,10 +203,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        tags = self.validate_tags(self.initial_data.get('tags'))
-        ingredients = self.validate_ingredients(
-            self.initial_data.get('ingredients')
-        )
+        tags = validated_data.get('tags')
+        ingredients = validated_data.get('ingredients')
         instance.tags.clear()
         instance.tags.set(tags)
         RecipeIngredient.objects.filter(recipe=instance).delete()
