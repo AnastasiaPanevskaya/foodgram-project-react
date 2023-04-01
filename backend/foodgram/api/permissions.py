@@ -16,5 +16,5 @@ class IsAuthorOrAdminOrReadOnly(BasePermission):
 
 class IsAuthenticatedOrAdmin(BasePermission):
     def has_permission(self, request, view):
-        return (request.method in SAFE_METHODS
+        return (request.user.is_authenticated in SAFE_METHODS
                 or request.user.is_staff)
