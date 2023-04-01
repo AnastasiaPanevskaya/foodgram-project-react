@@ -203,22 +203,21 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        super().update(instance, validated_data)
         tags = self.validate_tags(self.initial_data.get('tags'))
         ingredients = self.validate_ingredients(
             self.initial_data.get('ingredients')
         )
         instance.tags.clear()
         instance.tags.set(tags)
-        instance.ingredients.clear()
-        Recipe.objects.bulk_create(
-            Recipe(
+        RecipeIngredient.objects.filter(recipe=instance).delete()
+        RecipeIngredient.objects.bulk_create(
+            RecipeIngredient(
                 recipe=instance,
-                ingredient_id=ingredient.get('id'),
+                ingredient=ingredient.get('ingredient'),
                 amount=ingredient.get('amount')
             ) for ingredient in ingredients)
         instance.save()
-        return instance
+        return super().update(instance, validated_data)
         # instance.image = validated_data.get('image', instance.image)
         # instance.name = validated_data.get('name', instance.name)
         # instance.text = validated_data.get('text', instance.text)
