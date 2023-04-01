@@ -75,7 +75,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     pagination_class = None
     search_fields = ('^name',)
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = IngredientFilter
+    # filterset_class = IngredientFilter
 
 
 class TagViewSet(ReadOnlyModelViewSet):

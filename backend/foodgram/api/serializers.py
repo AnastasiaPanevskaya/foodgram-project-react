@@ -203,20 +203,48 @@ class RecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        super().update(instance, validated_data)
-        tags = self.validate_tags(self.initial_data.get('tags'))
-        ingredients = self.validate_ingredients(
-            self.initial_data.get('ingredients')
+        # super().update(instance, validated_data)
+        # tags = self.validate_tags(self.initial_data.get('tags'))
+        # ingredients = self.validate_ingredients(
+        #     self.initial_data.get('ingredients')
+        # )
+        # instance.tags.clear()
+        # instance.tags.set(tags)
+        # instance.ingredients.clear()
+        # Recipe.objects.bulk_create(
+        #     Recipe(
+        #         recipe=instance,
+        #         ingredient_id=ingredient.get('id'),
+        #         amount=ingredient.get('amount')
+        #     ) for ingredient in ingredients)
+        # instance.save()
+        # return instance
+        instance.image = validated_data.get('image', instance.image)
+        instance.name = validated_data.get('name', instance.name)
+        instance.text = validated_data.get('text', instance.text)
+        instance.cooking_time = validated_data.get(
+            'cooking_time',
+            instance.cooking_time
         )
-        instance.tags.clear()
-        instance.tags.set(tags)
-        instance.ingredients.clear()
+        tags = self.initial_data.get('tags')
+        Recipe.objects.filter(recipe=instance).delete()
+        Recipe.objects.bulk_create(
+            Recipe(
+                tag_id=tag,
+                recipe=instance,
+
+            ) for tag in tags)
+
+        ingredients = self.initial_data.get('ingredients')
+        RecipeIngredient.objects.filter(recipe=instance).delete()
+
         RecipeIngredient.objects.bulk_create(
             RecipeIngredient(
                 recipe=instance,
                 ingredient_id=ingredient.get('id'),
                 amount=ingredient.get('amount')
             ) for ingredient in ingredients)
+
         instance.save()
         return instance
 
