@@ -227,8 +227,8 @@ class RecipeSerializer(serializers.ModelSerializer):
             instance.cooking_time
         )
         tags = self.initial_data.get('tags')
-        Tag.objects.filter(recipe=instance).delete()
-        Tag.objects.bulk_create(
+        Recipe.objects.filter(recipe=instance).delete()
+        Recipe.objects.bulk_create(
             Tag(
                 tag=tag,
                 recipe=instance,
