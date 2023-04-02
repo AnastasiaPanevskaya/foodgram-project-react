@@ -34,7 +34,7 @@ class IngredientFilter(FilterSet):
 class RecipeFilter(FilterSet):
     author = ModelChoiceFilter(queryset=User.objects.all())
     tags = ModelMultipleChoiceFilter(
-        field_name='tags__slug',
+        field_name='tag__slug',
         to_field_name='slug',
         queryset=Tag.objects.all(),
     )
