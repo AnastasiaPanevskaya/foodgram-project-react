@@ -6,31 +6,12 @@ import django_filters as filters
 from django_filters.rest_framework.filters import (
     ModelChoiceFilter,
     BooleanFilter,
-    AllValuesMultipleFilter,
+    ModelMultipleChoiceFilter,
     CharFilter
 )
-from recipes.models import Ingredient, Recipe
+from recipes.models import Ingredient, Recipe, Tag
 
 User = get_user_model()
-
-
-class TagsMultipleChoiceField(
-        filters.fields.MultipleChoiceField):
-    def validate(self, value):
-        if self.required and not value:
-            raise ValidationError(
-                self.error_messages['required'],
-                code='required')
-        for val in value:
-            if val in self.choices and not self.valid_value(val):
-                raise ValidationError(
-                    self.error_messages['invalid_choice'],
-                    code='invalid_choice',
-                    params={'value': val},)
-
-
-class TagsFilter(AllValuesMultipleFilter):
-    field_class = TagsMultipleChoiceField
 
 
 class IngredientFilter(FilterSet):
@@ -54,11 +35,11 @@ class IngredientFilter(FilterSet):
 
 class RecipeFilter(FilterSet):
     author = ModelChoiceFilter(queryset=User.objects.all())
-    tags = AllValuesMultipleFilter(
+    tags = ModelMultipleChoiceFilter(
         field_name='tags__slug',
-        # to_field_name='slug',
-        # queryset=Tag.objects.all(),
-        lookup_expr='Ссылка'
+        to_field_name='slug',
+        queryset=Tag.objects.all(),
+        null_label=None
     )
     is_favorited = BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = BooleanFilter(
