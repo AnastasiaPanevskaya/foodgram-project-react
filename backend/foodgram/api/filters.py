@@ -4,6 +4,7 @@ from django.db.models import BooleanField, ExpressionWrapper, Q
 from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework.filters import (
     ModelChoiceFilter,
+    ModelMultipleChoiceFilter,
     BooleanFilter,
     AllValuesMultipleFilter,
     CharFilter
@@ -32,17 +33,17 @@ class IngredientFilter(FilterSet):
         ).order_by('-startswith')
 
 
-class TagsFilter(AllValuesMultipleFilter):
-    field_class = forms.MultipleChoiceField
-
-
 class RecipeFilter(FilterSet):
     author = ModelChoiceFilter(queryset=User.objects.all())
+    # tags = ModelMultipleChoiceFilter(
+    #     field_name='tags__slug',
+    #     to_field_name='slug',
+    #     null_value=None,
+    #     queryset=Tag.objects.all(),
+    # )
     tags = AllValuesMultipleFilter(
         field_name='tags__slug',
-        to_field_name='slug',
-        null_value=None,
-        queryset=Tag.objects.all(),
+        label='tags',
     )
     is_favorited = BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = BooleanFilter(
