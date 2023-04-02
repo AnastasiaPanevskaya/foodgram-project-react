@@ -3,7 +3,7 @@ from django.db.models import BooleanField, ExpressionWrapper, Q
 from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework.filters import (
     ModelChoiceFilter,
-    AllValuesMultipleFilter,
+    MultipleChoiceFilter,
     BooleanFilter,
     CharFilter
 )
@@ -33,7 +33,7 @@ class IngredientFilter(FilterSet):
 
 class RecipeFilter(FilterSet):
     author = ModelChoiceFilter(queryset=User.objects.all())
-    tags = AllValuesMultipleFilter(
+    tags = MultipleChoiceFilter(
         field_name='tags__slug',
         to_field_name='slug',
         conjoined=True,
