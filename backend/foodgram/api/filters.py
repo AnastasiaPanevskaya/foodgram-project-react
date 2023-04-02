@@ -1,6 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.db.models import BooleanField, ExpressionWrapper, Q
 from django_filters.rest_framework import FilterSet
+import django_filters as filters
 from django_filters.rest_framework.filters import (
     ModelChoiceFilter,
     BooleanFilter,
@@ -10,6 +12,25 @@ from django_filters.rest_framework.filters import (
 from recipes.models import Ingredient, Recipe
 
 User = get_user_model()
+
+
+class TagsMultipleChoiceField(
+        filters.fields.MultipleChoiceField):
+    def validate(self, value):
+        if self.required and not value:
+            raise ValidationError(
+                self.error_messages['required'],
+                code='required')
+        for val in value:
+            if val in self.choices and not self.valid_value(val):
+                raise ValidationError(
+                    self.error_messages['invalid_choice'],
+                    code='invalid_choice',
+                    params={'value': val},)
+
+
+class TagsFilter(AllValuesMultipleFilter):
+    field_class = TagsMultipleChoiceField
 
 
 class IngredientFilter(FilterSet):
