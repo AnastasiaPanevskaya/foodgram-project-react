@@ -37,7 +37,6 @@ class RecipeFilter(FilterSet):
         field_name='tags__slug',
         to_field_name='slug',
         always_filter=False,
-        conjoined=True,
         queryset=Tag.objects.all(),
         distinct=True,
     )
