@@ -1,8 +1,6 @@
-from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.db.models import BooleanField, ExpressionWrapper, Q
 from django_filters.rest_framework import FilterSet
-import django_filters as filters
 from django_filters.rest_framework.filters import (
     ModelChoiceFilter,
     BooleanFilter,
