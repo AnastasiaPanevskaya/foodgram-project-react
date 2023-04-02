@@ -1,10 +1,12 @@
+from django import forms
 from django.contrib.auth import get_user_model
 from django.db.models import BooleanField, ExpressionWrapper, Q
 from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework.filters import (
     ModelChoiceFilter,
-    ChoiceFilter,
+    ModelMultipleChoiceFilter,
     BooleanFilter,
+    AllValuesMultipleFilter,
     CharFilter
 )
 from recipes.models import Ingredient, Recipe, Tag
@@ -31,9 +33,13 @@ class IngredientFilter(FilterSet):
         ).order_by('-startswith')
 
 
+class TagsFilter(AllValuesMultipleFilter):
+    field_class = forms.MultipleChoiceField
+
+
 class RecipeFilter(FilterSet):
     author = ModelChoiceFilter(queryset=User.objects.all())
-    tags = ChoiceFilter(
+    tags = AllValuesMultipleFilter(
         field_name='tags__slug',
         to_field_name='slug',
         null_value=None,
