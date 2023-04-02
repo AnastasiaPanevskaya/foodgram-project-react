@@ -4,7 +4,7 @@ from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework.filters import (
     ModelChoiceFilter,
     BooleanFilter,
-    MultipleChoiceFilter,
+    AllValuesMultipleFilter,
     CharFilter
 )
 from recipes.models import Ingredient, Recipe, Tag
@@ -33,12 +33,11 @@ class IngredientFilter(FilterSet):
 
 class RecipeFilter(FilterSet):
     author = ModelChoiceFilter(queryset=User.objects.all())
-    tags = MultipleChoiceFilter(
+    tags = AllValuesMultipleFilter(
         field_name='tags__slug',
-        to_field_name='slug',
-        always_filter=False,
-        queryset=Tag.objects.all(),
-        distinct=True,
+        # to_field_name='slug',
+        # queryset=Tag.objects.all(),
+        lookup_expr='Ссылка'
     )
     is_favorited = BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = BooleanFilter(
